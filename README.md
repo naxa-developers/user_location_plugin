@@ -59,23 +59,32 @@ In order to use this plugin in Android, you have to add this permission in `Andr
 Permission check for Android 6+ was added.
 
 ### iOS
+* Note: I have not tested the plugin in ios
 
-And to use it in iOS, you have to add this permission in Info.plist :
+On iOS you'll need to add the NSLocationWhenInUseUsageDescription to your Info.plist file in order to access the device's location. Simply open your Info.plist file and add the following:
 
-```xml
-NSLocationWhenInUseUsageDescription
-NSLocationAlwaysUsageDescription
+```
+<key>NSLocationWhenInUseUsageDescription</key>
+<string>This app needs access to location when open.</string>
 ```
 
-* Note: I have not tested the plugin in ios
+If you would like to access the device's location when your App is running in the background, you should also add the NSLocationAlwaysAndWhenInUseUsageDescription (if your App support iOS 10 or earlier you should also add the key NSLocationAlwaysUsageDescription) key to your Info.plist file:
+
+```
+<key>NSLocationAlwaysUsageDescription</key>
+<string>This app needs access to location when in the background.</string>
+<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+<string>This app needs access to location when open and in the background.</string>
+```
+
+
 
 ### Installation guide
 
 - Declare and initialize ```  MapController mapController = MapController(); List<Marker> markers = [];```
 - Add ` UserLocationPlugin()` to plugins
 - Add  `MarkerLayerOptions` and `UserLocationOptions` in `layers`
-> While performing a location update, We remove and add the location marker on the map. Using a single list to hold this location marker along with other markers will unnecessarily also clear them. For that reason, we need to provide an empty marker array to hold the location marker. 
- 
+
 
 ### Sample code
 
@@ -103,10 +112,18 @@ class MyApp extends StatelessWidget {
 class HomePage extends StatelessWidget {
   // ADD THIS
   MapController mapController = MapController();
+  UserLocationOptions userLocationOptions;
   // ADD THIS
   List<Marker> markers = [];
   @override
   Widget build(BuildContext context) {
+    // You can use the userLocationOptions object to change the properties
+    // of UserLocationOptions in runtime
+    userLocationOptions = UserLocationOptions(
+                context: context,
+                mapController: mapController,
+                markers: markers,
+                );
     return Scaffold(
         appBar: AppBar(title: Text("User Location Plugin")),
         body: FlutterMap(
@@ -130,11 +147,7 @@ class HomePage extends StatelessWidget {
             // ADD THIS
             MarkerLayerOptions(markers: markers),
             // ADD THIS
-            UserLocationOptions(
-                context: context,
-                mapController: mapController,
-                markers: markers,
-                ),
+            userLocationOptions,
           ],
           // ADD THIS
           mapController: mapController,
@@ -146,9 +159,11 @@ class HomePage extends StatelessWidget {
 
 ### Optional parameters
 * `markerWidget` overrides the default marker widget
-* `markerlocationStream` provides the current location of the marker
+* `onLocationChange` is a callback function to get the current location of user. It's uses is defined in the example program.
 * `updateMapLocationOnPositionChange` moves the map to the current location of the user if set to `true`
-* `showMoveToCurrentLocationFloatingActionButton` displays a floating action button at the bottom right of the screen which will redirect the user to their current location. This is useful if the above `updateMapLocationOnPositionChange` is set to `false`
+* `showMoveToCurrentLocationFloatingActionButton` displays a floating action button at the bottom right of the screen which will redirect the user to their current location. You can also pass your own widget as FAB and control the position using options `fabBottom` and `fabRight` options.
+* `showHeading` is used to control whether or not to show heading in the marker widget
+* `zoomToCurrentLocationOnLoad` if true, zooms to the current location of the user with a zoom factor 17
 * `moveToCurrentLocationFloatingActionButton` is a widget when passed overrides the default floating action button. Default floating action button code: 
 ``` 
 Container(

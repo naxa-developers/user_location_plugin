@@ -1,3 +1,26 @@
+## 0.1.2
+
+* Disposes compass stream #34
+
+## 0.1.1
+
+* Fixes #10
+* Adds user direction head(Fixes #18)
+
+## 0.1.0
+
+* Upgraded flutter map to v8.0.2
+* Fix map zoom issue #26
+* Upgraded README.md
+
+## 0.0.9
+
+* adds zoom options to MapController
+* FAB when clicked zooms to current location
+
+## 0.0.7
+
+* Upgraded the flutter map plugin to 0.80
 
 ## 0.0.5
 
